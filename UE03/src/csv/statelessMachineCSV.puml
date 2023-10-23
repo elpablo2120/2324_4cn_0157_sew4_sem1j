@@ -1,0 +1,5 @@
+@startuml
+[*] --> VALUE
+VALUE --> SEPERATOR : wenn ';'
+
+@enduml

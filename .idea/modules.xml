@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/UE01_UE02/UE01_UE02.iml" filepath="$PROJECT_DIR$/UE01_UE02/UE01_UE02.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UE03/UE03.iml" filepath="$PROJECT_DIR$/UE03/UE03.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/sew4_sem1j.iml" filepath="$PROJECT_DIR$/.idea/sew4_sem1j.iml" />
+    </modules>
+  </component>
+</project>

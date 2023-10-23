@@ -1,0 +1,20 @@
+@startuml
+[*] -> NOWORD : counter = 0
+INWORD -> INWORD : wenn Buchstabe
+INWORD --> NOWORD : wenn Whitespace/Unbekannte
+INWORD -> INTAG : wenn '<'
+
+NOWORD -> NOWORD : wenn Whitespace/Unbekannte
+NOWORD -> INTAG : wenn '<'
+NOWORD -> INWORD : wenn Buchstabe counter++
+
+INTAG --> NOWORD : wenn '>'
+INTAG --> INATTRIBUTE : wenn '"'
+INTAG -> INTAG : bis TAG vorbei
+
+INATTRIBUTE --> INTAG : wenn '"'
+INATTRIBUTE --> ESCAPE : wenn '\\\'
+INATTRIBUTE -> INATTRIBUTE : sonst
+
+ESCAPE --> INATTRIBUTE : bis nach Escape
+@enduml
