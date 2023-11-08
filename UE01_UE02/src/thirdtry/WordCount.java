@@ -5,72 +5,81 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class WordCount {
+    private int wordCount = 0; // Change the variable name to "wordCount"
+
     public static int count(String input) {
-        int wordCount = 0;
-        State currentState = State.NOWORD;
-        StringBuilder currentWord = new StringBuilder();
+        WordCount context = new WordCount();
+        State state = State.NOWORD;
 
         for (char c : input.toCharArray()) {
-            currentState = currentState.handleChar(c);
-
-            if (currentState == State.INWORD) {
-                currentWord.append(c);
-            } else if (currentState == State.NOWORD && currentWord.length() > 0) {
-                currentWord.setLength(0); // Clear the current word
-                wordCount++;
-            }
+            state = state.handleChar(c, context);
         }
 
-        return wordCount;
+        return context.wordCount;
     }
 
     private enum State {
-        INWORD, NOWORD, INTAG, INATTRIBUTE, ESCAPE;
-
-        State handleChar(char c) {
-            switch (this) {
-                case INWORD:
-                    if (Character.isLetter(c)) {
-                        return INWORD;
-                    } else if (Character.isWhitespace(c)) {
-                        return NOWORD;
-                    } else if (c == '<') {
-                        return INTAG;
-                    } else {
-                        return NOWORD;
-                    }
-                case NOWORD:
-                    if (Character.isWhitespace(c)) {
-                        return NOWORD;
-                    } else if (Character.isLetter(c)) {
-                        return INWORD;
-                    } else if (c == '<') {
-                        return INTAG;
-                    } else {
-                        return NOWORD;
-                    }
-                case INTAG:
-                    if (c == '>') {
-                        return NOWORD;
-                    } else if (c == '"') {
-                        return INATTRIBUTE;
-                    } else {
-                        return INTAG;
-                    }
-                case INATTRIBUTE:
-                    if (c == '"') {
-                        return INTAG;
-                    } else if (c == '\\') {
-                        return ESCAPE;
-                    } else {
-                        return INATTRIBUTE;
-                    }
-                case ESCAPE:
-                    return INATTRIBUTE;
-                default:
-                    return this;
+        INWORD {
+            @Override
+            State handleChar(char c, WordCount context) {
+                if (Character.isLetter(c)) {
+                    return INWORD;
+                } else if (Character.isWhitespace(c)) {
+                    return NOWORD;
+                } else if (c == '<') {
+                    return INTAG;
+                } else {
+                    return NOWORD;
+                }
             }
-        }
+        },
+        NOWORD {
+            @Override
+            State handleChar(char c, WordCount context) {
+                if (Character.isWhitespace(c)) {
+                    return NOWORD;
+                } else if (Character.isLetter(c)) {
+                    context.wordCount++;
+                    return INWORD;
+                } else if (c == '<') {
+                    return INTAG;
+                } else {
+                    return NOWORD;
+                }
+            }
+        },
+        INTAG {
+            @Override
+            State handleChar(char c, WordCount context) {
+                if (c == '>') {
+                    return NOWORD;
+                } else if (c == '"') {
+                    return INATTRIBUTE;
+                } else {
+                    return INTAG;
+                }
+            }
+        },
+        INATTRIBUTE {
+            @Override
+            State handleChar(char c, WordCount context) {
+                if (c == '"') {
+                    return INTAG;
+                } else if (c == '\\') {
+                    return ESCAPE;
+                } else {
+                    return INATTRIBUTE;
+                }
+            }
+        },
+        ESCAPE {
+            @Override
+            State handleChar(char c, WordCount context) {
+                return INATTRIBUTE;
+            }
+        };
+
+        abstract State handleChar(char c, WordCount context);
     }
 
     public int countWordsFile(String path) {
@@ -80,11 +89,11 @@ public class WordCount {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return thirdtry.WordCount.count(text);
+        return WordCount.count(text);
     }
 
     public static void main(String[] args) {
-        thirdtry.WordCount wordCount = new thirdtry.WordCount();
+        WordCount wordCount = new WordCount();
 
         String filePath = "UE01_UE02/src/thirdtry/crsto12.html";
         int wordCountFile = wordCount.countWordsFile(filePath);
