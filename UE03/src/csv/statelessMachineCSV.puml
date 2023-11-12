@@ -1,5 +1,20 @@
 @startuml
-[*] --> VALUE
-VALUE --> SEPERATOR : wenn ';'
+'https://plantuml.com/state-diagram
+
+scale 350 width
+[*] --> normalChar
+normalChar --> delimiter : if char is delimiter \n indexCounter++ \n add new element to fields array
+delimiter --> normalChar : if char is not delimiter \n add current char to fields
+delimiter --> delimiter : if char is delimiter \n indexCounter++ \n add new element to fields array
+delimiter --> openingFeldbegrenzer : if char is Feldbegrenzer
+normalChar -->  openingFeldbegrenzer : if char is Feldbegrenzer
+openingFeldbegrenzer --> inFeldbegrenzer : if char is not Feldbegrenzer \n add current char to fields
+inFeldbegrenzer --> closingFeldbegrenzer : if char is Feldbegrenzer
+closingFeldbegrenzer --> normalChar : if char is delmiter \n else throw exception \n add current char to fields \n indexCounter++
+closingFeldbegrenzer --> inFeldbegrenzer : if next char is Feldbegrenzer \n add Feldbegrenzer char to fields
+inFeldbegrenzer --> closingFeldbegrenzer : if next char is Feldbegrenzer
+inFeldbegrenzer --> inFeldbegrenzer : if next char is not Feldbegrenzer \n add current char to fields
+openingFeldbegrenzer --> normalChar : if next char is Feldbegrenzer \n add Feldbegrenzer char to fields
+delimiter --> delimiter : if next char is whitespace
 
 @enduml

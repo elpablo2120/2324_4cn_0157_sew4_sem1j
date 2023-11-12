@@ -1,32 +1,60 @@
 package csv;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 
 public class CSVReader {
 
-    enum State{
-        VALUE {
+    private ArrayList<String> fields;
+    private int index;
+
+    enum State {
+        CHAR {
             @Override
             State handleChar(char c, CSVReader context) {
-                return null;
+                if (c == ',') {
+                    context.index++;
+                    context.fields.add("");
+                    return DELIMITER;
+                }
+                context.fields.set(context.index, context.fields.get(context.index) + c);
+                return CHAR;
             }
         },
-        SEPERATOR {
+
+        DELIMITER {
             @Override
             State handleChar(char c, CSVReader context) {
-                return null;
+                if (c == ',') {
+                    context.index++;
+                    context.fields.add("");
+                    return DELIMITER;
+                }
+                context.fields.set(context.index, context.fields.get(context.index) + c);
+                return CHAR;
             }
         };
+
         abstract State handleChar(char c, CSVReader context);
-
     }
 
-    public static String[] split (String input){
-        String[] erg;
-        erg = new String[]{"abc"};
-        return erg;
+    public ArrayList<String> split(String input) throws Exception {
+        index = 0;
+        fields = new ArrayList<>();
+        fields.add("");
+        State state = State.CHAR;
+        for (int i = 0; i < input.length(); i++) {
+            state = state.handleChar(input.charAt(i), this);
+        }
+        return fields;
     }
+
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(split("1;2;3;4;5;6")));
+        CSVReader csvReader = new CSVReader();
+        try {
+            ArrayList<String> result = csvReader.split("ok,,test");
+            System.out.println(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

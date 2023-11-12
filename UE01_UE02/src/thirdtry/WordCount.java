@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class WordCount {
-    private int wordCount = 0; // Change the variable name to "wordCount"
+    private int wordCount = 0;
 
     public static int count(String input) {
         WordCount context = new WordCount();
