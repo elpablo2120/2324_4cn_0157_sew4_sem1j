@@ -93,7 +93,7 @@ public class CSVReader {
         CSVReader csvReader = new CSVReader();
         try {
             ArrayList<String> result = csvReader.split("\"ok\",\"ok\"\"ok\",ok");
-            System.out.println(result);
+            System.out.println("ERGEBNIS: " + result);
         } catch (Exception e) {
             e.printStackTrace();
         }
