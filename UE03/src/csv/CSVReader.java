@@ -12,8 +12,8 @@ public class CSVReader {
             @Override
             State handleChar(char c, CSVReader context) {
                 if (c == ',') {
-                    context.index++;
                     context.fields.add("");
+                    context.index++;
                     return DELIMITER;
                 } else if (c == '"') {
                     return OPENFELDBEGRENZER;
@@ -43,6 +43,7 @@ public class CSVReader {
             @Override
             State handleChar(char c, CSVReader context) {
                 if (c == '"') {
+                    context.fields.set(context.index, context.fields.get(context.index) + "\"");
                     return CHAR;
                 }
                 context.fields.set(context.index, context.fields.get(context.index) + c);
@@ -62,14 +63,19 @@ public class CSVReader {
         CLOSEFELDBEGRENZER {
             @Override
             State handleChar(char c, CSVReader context) {
-                if (',' != c) {
+                if (c == '"') {
+                    context.fields.set(context.index, context.fields.get(context.index) + "\"");
+                    return OPENFELDBEGRENZER;
+                } else if (c == ',') {
+                    context.index++;
+                    context.fields.add("");
+                    return CHAR;
+                } else {
                     throw new IllegalArgumentException();
                 }
-                context.index++;
-                context.fields.add("");
-                return CHAR;
             }
         };
+
 
 
         abstract State handleChar(char c, CSVReader context);
@@ -80,6 +86,7 @@ public class CSVReader {
         fields = new ArrayList<>();
         fields.add("");
         State state = State.CHAR;
+        input = input.replaceFirst(" *", "");
         for (int i = 0; i < input.length(); i++) {
             state = state.handleChar(input.charAt(i), this);
         }
