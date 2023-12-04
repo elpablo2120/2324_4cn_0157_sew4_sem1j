@@ -4,9 +4,22 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * This class provides functionality to count words in a given input string or file.
+ * It uses a finite state machine to handle different states while iterating through the input characters.
+ *
+ * @author Paul Waldecker
+ * @version 3
+ */
 public class WordCount {
     private int wordCount = 0;
 
+    /**
+     * Counts the number of words in the given input string.
+     *
+     * @param input The input string to count words from.
+     * @return The number of words in the input string.
+     */
     public static int count(String input) {
         WordCount context = new WordCount();
         State state = State.NOWORD;
@@ -82,6 +95,12 @@ public class WordCount {
         abstract State handleChar(char c, WordCount context);
     }
 
+    /**
+     * Counts the number of words in the text content of a file specified by the given path.
+     *
+     * @param path The path to the file.
+     * @return The number of words in the file.
+     */
     public int countWordsFile(String path) {
         String text = "";
         try {
@@ -92,6 +111,11 @@ public class WordCount {
         return WordCount.count(text);
     }
 
+    /**
+     * The main method demonstrates the usage of the WordCount class by counting words in a file.
+     *
+     * @param args The command-line arguments.
+     */
     public static void main(String[] args) {
         WordCount wordCount = new WordCount();
 
