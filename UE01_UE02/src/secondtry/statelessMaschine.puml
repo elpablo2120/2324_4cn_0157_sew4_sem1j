@@ -16,5 +16,5 @@ INATTRIBUTE --> INTAG : wenn '"'
 INATTRIBUTE --> ESCAPE : wenn '\\\'
 INATTRIBUTE -> INATTRIBUTE : sonst
 
-ESCAPE --> INATTRIBUTE : bis nach Escape
+ESCAPE --> INATTRIBUTE : "*" (jedes Zeichen)
 @enduml

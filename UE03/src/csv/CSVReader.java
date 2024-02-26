@@ -1,108 +1,143 @@
 package csv;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class CSVReader {
 
-    private ArrayList<String> fields;
-    private int index;
+    public static void main(String[] args) {
+        CSVReader test = new CSVReader(';','"', false);
+
+        System.out.println(Arrays.toString(test.split(";")));
+        System.out.println(test.split(";").length);
+
+    }
+
+    char delimiter = ';';
+
+    char doublequote = '"';
+
+    boolean skipInitialWhitespace = false;
+
+    int counter = 0;
+
+    int wsCounter = 0;
+
+    ArrayList<String> output = new ArrayList<>();
+
+    public CSVReader(char delimiter, char doublequote, boolean skipInitialWhitespace) {
+        this.delimiter = delimiter;
+        this.doublequote = doublequote;
+        this.skipInitialWhitespace = skipInitialWhitespace;
+    }
 
     enum State {
-        CHAR {
+        NOVALUE {
             @Override
             State handleChar(char c, CSVReader context) {
-                if (c == ',') {
-                    context.fields.add("");
-                    context.index++;
-                    return DELIMITER;
-                } else if (c == '"') {
-                    return OPENFELDBEGRENZER;
+                if(context.skipInitialWhitespace) {
+                    if (c == context.doublequote) {
+                        context.counter++;
+                        context.wsCounter = 0;
+                        context.output.add("");
+                        return QUOTEVALUE;
+                    } else if (c == context.delimiter) {
+                        context.counter++;
+                        context.output.add(String.valueOf(c));
+                        return VALUE;
+                    } else if (Character.isWhitespace(c)) {
+                        context.wsCounter++;
+                        return this;
+                    } else {
+                        context.counter++;
+                        context.output.add(" ".repeat(context.wsCounter) + c);
+                        context.wsCounter = 0;
+                        return VALUE;
+                    }
+                } else {
+                    if (c == context.doublequote) {
+                        context.counter++;
+                        context.output.add("");
+                        return QUOTEVALUE;
+                    } else if (c == context.delimiter) {
+                        context.counter++;
+                        context.output.add("");
+                        return this;
+                    } else {
+                        context.counter++;
+                        context.output.add(String.valueOf(c));
+                        return VALUE;
+                    }
                 }
-                context.fields.set(context.index, context.fields.get(context.index) + c);
-                return CHAR;
             }
         },
 
-        DELIMITER {
+        VALUE {
             @Override
             State handleChar(char c, CSVReader context) {
-                if (c == ',') {
-                    context.index++;
-                    context.fields.add("");
-                    return DELIMITER;
-                } else if (c == '"') {
-                    return OPENFELDBEGRENZER;
-                } else if (Character.isWhitespace(c)) {
-                    return DELIMITER;
-                }
-                context.fields.set(context.index, context.fields.get(context.index) + c);
-                return CHAR;
-            }
-        },
-        OPENFELDBEGRENZER {
-            @Override
-            State handleChar(char c, CSVReader context) {
-                if (c == '"') {
-                    context.fields.set(context.index, context.fields.get(context.index) + "\"");
-                    return CHAR;
-                }
-                context.fields.set(context.index, context.fields.get(context.index) + c);
-                return INFELDBEGRENZER;
-            }
-        },
-        INFELDBEGRENZER {
-            @Override
-            State handleChar(char c, CSVReader context) {
-                if (c == '"') {
-                    return CLOSEFELDBEGRENZER;
-                }
-                context.fields.set(context.index, context.fields.get(context.index) + c);
-                return INFELDBEGRENZER;
-            }
-        },
-        CLOSEFELDBEGRENZER {
-            @Override
-            State handleChar(char c, CSVReader context) {
-                if (c == '"') {
-                    context.fields.set(context.index, context.fields.get(context.index) + "\"");
-                    return OPENFELDBEGRENZER;
-                } else if (c == ',') {
-                    context.index++;
-                    context.fields.add("");
-                    return CHAR;
+                if (c == context.doublequote) {
+                    context.output.set(context.counter - 1, "");
+                    return QUOTEVALUE;
+                } else if (c != context.delimiter) {
+                    context.output.set(context.counter - 1, context.output.get(context.counter - 1) + c);
+                    return this;
                 } else {
-                    throw new IllegalArgumentException();
+                    return NOVALUE;
+                }
+
+            }
+        },
+
+        QUOTEVALUE {
+            @Override
+            State handleChar(char c, CSVReader context) {
+                if(context.skipInitialWhitespace) {
+                    if (c == context.delimiter) {
+                        return NOVALUE;
+                    } else {
+                        context.output.set(context.counter - 1, context.output.get(context.counter - 1) + c);
+                        return this;
+                    }
+                } else {
+                    if (c != context.doublequote) {
+                        context.output.set(context.counter - 1, context.output.get(context.counter - 1) + c);
+                        return this;
+                    } else {
+                        return QOUTEEXIT;
+                    }
+                }
+            }
+        },
+
+        QOUTEEXIT {
+            @Override
+            State handleChar(char c, CSVReader context) {
+                if (c == context.delimiter) {
+                    return NOVALUE;
+                } else if (c == ' ') {
+                    return this;
+                } else if (c == context.doublequote) {
+                    context.output.set(context.counter - 1, context.output.get(context.counter - 1) + "\"\"");
+                    return QUOTEVALUE;
+                } else {
+                    throw new IllegalArgumentException("Values between closing double-quote and delimiter are not allowed!");
                 }
             }
         };
-
-
-
         abstract State handleChar(char c, CSVReader context);
     }
 
-    public ArrayList<String> split(String input) throws Exception {
-        index = 0;
-        fields = new ArrayList<>();
-        fields.add("");
-        State state = State.CHAR;
-        input = input.replaceFirst(" *", "");
-        for (int i = 0; i < input.length(); i++) {
-            state = state.handleChar(input.charAt(i), this);
+    public String[] split(String text) {
+        State state = State.NOVALUE;
+        counter = 0;
+        output.clear();
+        for (char c : text.toCharArray()) {
+            state = state.handleChar(c, this);
         }
-        if(state == State.INFELDBEGRENZER){
-            throw  new IllegalArgumentException();
+        if (state == State.QUOTEVALUE && !skipInitialWhitespace) {
+            throw new IllegalArgumentException("Double-quotes need to be closed");
         }
-        return fields;
+        return output.toArray(String[]::new);
     }
 
-    public static void main(String[] args) {
-        CSVReader csvReader = new CSVReader();
-        try {
-            ArrayList<String> result = csvReader.split("\"ok\",\"ok\"\"ok\",ok");
-            System.out.println("ERGEBNIS: " + result);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

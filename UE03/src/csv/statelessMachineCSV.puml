@@ -1,20 +1,31 @@
 @startuml
-'https://plantuml.com/state-diagram
 
-scale 350 width
-[*] --> normalChar
-normalChar --> delimiter : if char is delimiter \n indexCounter++ \n add new element to fields array
-delimiter --> normalChar : if char is not delimiter \n add current char to fields
-delimiter --> delimiter : if char is delimiter \n indexCounter++ \n add new element to fields array
-delimiter --> openingFeldbegrenzer : if char is Feldbegrenzer
-normalChar -->  openingFeldbegrenzer : if char is Feldbegrenzer
-openingFeldbegrenzer --> inFeldbegrenzer : if char is not Feldbegrenzer \n add current char to fields
-inFeldbegrenzer --> closingFeldbegrenzer : if char is Feldbegrenzer
-closingFeldbegrenzer --> normalChar : if char is delmiter \n else throw exception \n add current char to fields \n indexCounter++
-closingFeldbegrenzer --> inFeldbegrenzer : if next char is Feldbegrenzer \n add Feldbegrenzer char to fields
-inFeldbegrenzer --> closingFeldbegrenzer : if next char is Feldbegrenzer
-inFeldbegrenzer --> inFeldbegrenzer : if next char is not Feldbegrenzer \n add current char to fields
-openingFeldbegrenzer --> normalChar : if next char is Feldbegrenzer \n add Feldbegrenzer char to fields
-delimiter --> delimiter : if next char is whitespace
+[*] --> NOVALUE
+
+NOVALUE: Alles was kein Value ist;
+VALUE: Alles was ein Value ist;
+QUOTEVALUE: Value in einem Feld Begrenzer;
+QUOTEEXIT: QUOTE wird verlassen
+
+
+
+VALUE --> VALUE: wenn (c != delimiter) + output.set(couter, +=c)
+VALUE --> NOVALUE: wenn (c == delimiter)
+NOVALUE --> VALUE: wenn (c != delimiter) + counter++
+NOVALUE --> NOVALUE: wenn (c == delimiter) + counter++
+
+VALUE --> QUOTEVALUE: wenn (c == doublequote) + output.set(counter, "")
+
+NOVALUE --> QUOTEVALUE: wenn (c == doublequote) + counter++
+QUOTEVALUE --> QUOTEVALUE: wenn (c != doublequote) + output.set(couter, +=c)
+QUOTEVALUE --> QUOTEEXIT: wenn (c == doublequote)
+QUOTEEXIT --> QUOTEVALUE: wenn (c == doublequote) +  output.set(couter, += "\"\"")
+QUOTEEXIT --> NOVALUE: wenn  (c == delimiter)
+QUOTEEXIT --> QUOTEEXIT: wenn (c == whitespace)
+
+VALUE --> [*]
+QUOTEEXIT --> [*]
+NOVALUE --> [*]
+
 
 @enduml
