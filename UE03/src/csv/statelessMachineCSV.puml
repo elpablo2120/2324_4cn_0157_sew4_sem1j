@@ -2,14 +2,12 @@
 
 [*] --> NOVALUE
 
-NOVALUE: Alles was kein Value ist;
-VALUE: Alles was ein Value ist;
-QUOTEVALUE: Value in einem Feld Begrenzer;
-QUOTEEXIT: QUOTE wird verlassen
+NOVALUE: Alles, was kein Value ist;
+VALUE: Alles, was ein Value ist;
+QUOTEVALUE: Value in einem Feldbegrenzer;
+QUOTEEXIT: QUOTE wird verlassen;
 
-
-
-VALUE --> VALUE: wenn (c != delimiter) + output.set(couter, +=c)
+VALUE --> VALUE: wenn (c != delimiter) + output.set(counter, +=c)
 VALUE --> NOVALUE: wenn (c == delimiter)
 NOVALUE --> VALUE: wenn (c != delimiter) + counter++
 NOVALUE --> NOVALUE: wenn (c == delimiter) + counter++
@@ -17,15 +15,14 @@ NOVALUE --> NOVALUE: wenn (c == delimiter) + counter++
 VALUE --> QUOTEVALUE: wenn (c == doublequote) + output.set(counter, "")
 
 NOVALUE --> QUOTEVALUE: wenn (c == doublequote) + counter++
-QUOTEVALUE --> QUOTEVALUE: wenn (c != doublequote) + output.set(couter, +=c)
+QUOTEVALUE --> QUOTEVALUE: wenn (c != doublequote) + output.set(counter, +=c)
 QUOTEVALUE --> QUOTEEXIT: wenn (c == doublequote)
-QUOTEEXIT --> QUOTEVALUE: wenn (c == doublequote) +  output.set(couter, += "\"\"")
-QUOTEEXIT --> NOVALUE: wenn  (c == delimiter)
+QUOTEEXIT --> QUOTEVALUE: wenn (c == doublequote) + output.set(counter, += "\"\"")
+QUOTEEXIT --> NOVALUE: wenn (c == delimiter)
 QUOTEEXIT --> QUOTEEXIT: wenn (c == whitespace)
 
 VALUE --> [*]
 QUOTEEXIT --> [*]
 NOVALUE --> [*]
-
 
 @enduml

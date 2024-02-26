@@ -6,31 +6,31 @@ import java.io.FileReader;
 import java.io.IOException;
 
 /**
- * Die CSVFileReader-Klasse ermöglicht das Lesen von CSV-Dateien und das Extrahieren von Werten aus den Zeilen.
+ * Die CSVFileReader-Klasse ermöglicht das Lesen einer CSV-Datei und die Verarbeitung der Daten als Array.
  */
 public class CSVFileReader {
 
     /** Der Pfad zur CSV-Datei. */
     String path;
 
-    /** Der Delimiter, der die CSV-Werte voneinander trennt. Standardmäßig ';'. */
+    /** Das Trennzeichen, das in der CSV-Datei verwendet wird. */
     char delimiter = ';';
 
-    /** Das Zeichen, das verwendet wird, um Werte in Anführungszeichen zu setzen. Standardmäßig '"'. */
+    /** Das Zeichen, das in der CSV-Datei verwendet wird, um Felder zu begrenzen. */
     char doublequote = '"';
 
-    /** Der FileReader für den Zugriff auf die CSV-Datei. */
+    /** Der FileReader, der die CSV-Datei einliest. */
     FileReader file;
 
-    /** Der BufferedReader für effizientes Lesen der CSV-Datei. */
+    /** Der BufferedReader, der die CSV-Datei ausliest. */
     BufferedReader bufferedReader;
 
     /**
-     * Konstruktor für CSVFileReader mit benutzerdefinierten Einstellungen für Delimiter und Anführungszeichen.
+     * Konstruktor für CSVFileReader, der eine CSV-Datei liest und die Daten als Array speichert.
      *
-     * @param path      Der Pfad zur CSV-Datei.
-     * @param delimiter Der Delimiter, der die CSV-Werte voneinander trennt.
-     * @param doublequote Das Zeichen, das verwendet wird, um Werte in Anführungszeichen zu setzen.
+     * @param path Der Pfad zur CSV-Datei.
+     * @param delimiter Das Trennzeichen, das in der CSV-Datei verwendet wird.
+     * @param doublequote Das Zeichen, das in der CSV-Datei verwendet wird, um Felder zu begrenzen.
      * @throws FileNotFoundException Wenn die CSV-Datei nicht gefunden wird.
      */
     public CSVFileReader(String path, char delimiter, char doublequote) throws FileNotFoundException {
@@ -43,10 +43,11 @@ public class CSVFileReader {
     }
 
     /**
-     * Konstruktor für CSVFileReader mit benutzerdefiniertem Delimiter.
+     * Konstruktor für CSVFileReader mit benutzerdefiniertem Trennzeichen, der eine CSV-Datei liest und die Daten als
+     * Array speichert.
      *
-     * @param path      Der Pfad zur CSV-Datei.
-     * @param delimiter Der Delimiter, der die CSV-Werte voneinander trennt.
+     * @param path Der Pfad zur CSV-Datei.
+     * @param delimiter Das Trennzeichen, das in der CSV-Datei verwendet wird.
      * @throws FileNotFoundException Wenn die CSV-Datei nicht gefunden wird.
      */
     public CSVFileReader(String path, char delimiter) throws FileNotFoundException {
@@ -58,7 +59,7 @@ public class CSVFileReader {
     }
 
     /**
-     * Konstruktor für CSVFileReader ohne benutzerdefinierte Einstellungen für Delimiter und Anführungszeichen.
+     * Konstruktor für CSVFileReader, der eine CSV-Datei liest und die Daten als Array speichert.
      *
      * @param path Der Pfad zur CSV-Datei.
      * @throws FileNotFoundException Wenn die CSV-Datei nicht gefunden wird.
@@ -71,10 +72,10 @@ public class CSVFileReader {
     }
 
     /**
-     * Liest die nächste Zeile aus der CSV-Datei und extrahiert die Werte in ein String-Array.
+     * Liest die nächste Zeile der CSV-Datei und gibt die Daten als Array zurück.
      *
-     * @return Ein String-Array mit den extrahierten CSV-Werten der nächsten Zeile.
-     * @throws IOException Wenn ein Fehler beim Lesen der Datei auftritt oder das Ende erreicht wurde.
+     * @return Die Daten der nächsten Zeile der CSV-Datei als Array.
+     * @throws IOException Wenn die letzte Zeile der CSV-Datei bereits erreicht wurde.
      */
     public String[] next() throws IOException {
         if (bufferedReader == null) {

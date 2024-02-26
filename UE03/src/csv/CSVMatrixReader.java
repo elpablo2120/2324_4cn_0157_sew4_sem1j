@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
-/**
- * Die CSVMatrixReader-Klasse ermöglicht das Lesen einer CSV-Datei und die Verarbeitung der Daten als quadratische Matrix.
- */
+
 public class CSVMatrixReader {
 
     /** Der Pfad zur CSV-Datei. */
