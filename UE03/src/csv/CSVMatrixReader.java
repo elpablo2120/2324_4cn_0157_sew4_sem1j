@@ -75,19 +75,25 @@ public class CSVMatrixReader {
      * @return Ein formatierter String, der die Matrix repräsentiert.
      */
     public String getMatrix() {
-        StringBuilder output = new StringBuilder();
-        for (int i = 1; i < matrix.get(1).length; i++) {
-            output.append(Character.toString(64 + i)).append(": ");
-            for (int j = 1; j < matrixRows; j++) {
-                if (!Objects.equals(matrix.get(j)[i], "")) {
+        StringBuilder output = new StringBuilder();  // StringBuilder für die effiziente Erstellung von Zeichenketten
+
+        for (int i = 1; i < matrix.get(1).length; i++) {  // Äußere Schleife für Spalten der Matrix
+            output.append(Character.toString(64 + i)).append(": ");  // Fügt den Buchstaben der Spalte hinzu, basierend auf dem ASCII-Wert
+
+            for (int j = 1; j < matrixRows; j++) {  // Innere Schleife für Zeilen der Matrix
+                if (!Objects.equals(matrix.get(j)[i], "")) {  // Überprüft, ob die Zelle nicht leer ist
                     output.append("nach ").append(Character.toString(64 + j)).append(":").append(matrix.get(j)[i]).append(", ");
+                    // Fügt Informationen über die Zelle hinzu (Zeilenindex, Spaltenindex und Wert)
                 }
-                if (j == matrixRows - 1) {
-                    output.delete(output.length() - 2, output.length());
-                    output.append("\n");
+
+                if (j == matrixRows - 1) {  // Überprüft, ob dies die letzte Zeile ist
+                    output.delete(output.length() - 2, output.length());  // Entfernt das letzte ", "
+                    output.append("\n");  // Fügt einen Zeilenumbruch hinzu, um zur nächsten Spalte zu wechseln
                 }
             }
         }
-        return output.toString().trim();
+
+        return output.toString().trim();  // Gibt den fertigen String zurück, ohne führende oder abschließende Leerzeichen
     }
+
 }
