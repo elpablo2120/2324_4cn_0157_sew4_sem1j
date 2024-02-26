@@ -7,6 +7,7 @@ import java.io.IOException;
 
 /**
  * Die CSVFileReader-Klasse ermöglicht das Lesen einer CSV-Datei und die Verarbeitung der Daten als Array.
+ * @author Paul Waldecker
  */
 public class CSVFileReader {
 

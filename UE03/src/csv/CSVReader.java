@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 /**
  * Die CSVReader-Klasse ermöglicht das Parsen von CSV-Texten mit verschiedenen Optionen.
+ * @author Paul Waldecker
  */
 public class CSVReader {
 
